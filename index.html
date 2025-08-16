@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Grow a Garden — Fruits & Vegetables with Variants & Prices</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0f1320;
+      --card:#12172a;
+      --muted:#8ca3c4;
+      --text:#eaf2ff;
+      --accent:#7dd87d;
+      --accent-2:#7ad1ff;
+      --chip:#1b2340;
+      --ring: #2653ff33;
+      --shadow: 0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.03);
+      --radius:16px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:Inter,system-ui,Segoe UI,Helvetica,Arial,sans-serif;
+      background: radial-gradient(1200px 600px at 10% -10%, #1b2140 0%, transparent 60%),
+                  radial-gradient(1000px 600px at 110% -20%, #132035 0%, transparent 70%),
+                  var(--bg);
+      color:var(--text);
+    }
+    header{
+      position:sticky; top:0; z-index:50; backdrop-filter:saturate(1.2) blur(8px);
+      background:linear-gradient(180deg, rgba(10,12,24,.9), rgba(10,12,24,.6) 60%, rgba(10,12,24,0));
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .wrap{max-width:1200px; margin:0 auto; padding:24px;}
+    .brand{display:flex; align-items:center; gap:14px}
+    .logo{
+      width:40px; height:40px; border-radius:12px; background:
+      conic-gradient(from 230deg at 50% 50%, #80ffb5, #7ad1ff, #a997ff, #80ffb5);
+      box-shadow:var(--shadow);
+    }
+    h1{margin:0; font-size: clamp(22px, 3vw, 34px); letter-spacing:.2px}
+    .sub{color:var(--muted); margin-top:6px; font-size:14px}
+    .toolbar{
+      display:grid; grid-template-columns:1fr 160px 160px 140px; gap:12px; margin-top:18px;
+    }
+    .input, select{
+      background:var(--card); color:var(--text); border:1px solid rgba(255,255,255,.08);
+      padding:12px 14px; border-radius:12px; outline:none; box-shadow:var(--shadow);
+    }
+    .input:focus, select:focus{border-color:#7ad1ff55; box-shadow:0 0 0 6px var(--ring)}
+    main{padding:24px}
+    .grid{
+      display:grid; grid-template-columns:repeat(12,1fr); gap:16px; align-items:stretch;
+    }
+    .card{
+      grid-column: span 4; background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.0));
+      border:1px solid rgba(255,255,255,.06); border-radius:var(--radius); box-shadow:var(--shadow);
+      overflow:hidden; display:flex; flex-direction:column;
+    }
+    @media (max-width:1000px){ .card{grid-column: span 6} .toolbar{grid-template-columns:1fr 1fr 1fr 1fr} }
+    @media (max-width:640px){ .card{grid-column: span 12} .toolbar{grid-template-columns:1fr 1fr} }
+    .thumb{
+      aspect-ratio: 16/9; background:#0b0f1a; border-bottom:1px solid rgba(255,255,255,.06);
+      background-size:cover; background-position:center;
+    }
+    .body{padding:14px}
+    .title{display:flex; align-items:center; gap:10px}
+    .chip{
+      font-size:12px; padding:6px 10px; border-radius:999px; background:var(--chip); color:#bcd2ff;
+      border:1px solid rgba(255,255,255,.06)
+    }
+    .name{font-weight:700; font-size:18px; letter-spacing:.2px}
+    .meta{
+      display:flex; flex-wrap:wrap; gap:8px; margin:10px 0 12px 0; color:var(--muted); font-size:12px
+    }
+    .meta span{padding:6px 8px; border-radius:8px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.06)}
+    table{width:100%; border-collapse:collapse; margin-top:8px; font-size:14px}
+    th, td{padding:8px 6px; border-bottom:1px solid rgba(255,255,255,.06); text-align:left}
+    th{color:#bcd2ff; font-weight:600}
+    .footer{
+      margin-top:30px; color:var(--muted); font-size:13px; text-align:center;
+    }
+    .empty{grid-column:1/-1; text-align:center; color:var(--muted); padding:40px}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>Grow a Garden</h1>
+          <div class="sub">Browse fruits & vegetables, compare variants, and plan your perfect plot.</div>
+        </div>
+      </div>
+      <div class="toolbar" role="search">
+        <input id="q" class="input" placeholder="Search (e.g., tomato, apple, early season)"/>
+        <select id="type">
+          <option value="">All Types</option>
+          <option value="Vegetable">Vegetables</option>
+          <option value="Fruit">Fruits</option>
+        </select>
+        <select id="season">
+          <option value="">Any Season</option>
+          <option>Spring</option>
+          <option>Summer</option>
+          <option>Fall</option>
+          <option>All</option>
+        </select>
+        <select id="sun">
+          <option value="">Any Sun</option>
+          <option>Full Sun</option>
+          <option>Partial Sun</option>
+          <option>Shade</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div id="grid" class="grid" aria-live="polite"></div>
+    <div class="footer">Prices shown are sample retail prices for seeds/starts (USD). Adjust as needed.</div>
+  </main>
+
+  <script>
+    const DATA = [
+      /* FRUITS */
+      {
+        type:"Fruit", name:"Apple", season:"Fall", sun:"Full Sun",
+        days:120, image:"https://images.unsplash.com/photo-1471193945509-9ad0617afabf",
+        variants:[
+          {name:"Honeycrisp", price:3.99}, {name:"Fuji", price:3.49}, {name:"Gala", price:3.29}
+        ]
+      },
+      { type:"Fruit", name:"Strawberry", season:"Spring", sun:"Full Sun", days:60,
+        image:"https://images.unsplash.com/photo-1464965911861-746a04b4bca6",
+        variants:[ {name:"Albion (everbearing)", price:2.99}, {name:"Seascape", price:2.79} ]
+      },
+      { type:"Fruit", name:"Blueberry", season:"Summer", sun:"Partial Sun", days:90,
+        image:"https://images.unsplash.com/photo-1560807707-8cc77767d783",
+        variants:[ {name:"Bluecrop", price:4.49}, {name:"Duke", price:4.29} ]
+      },
+      { type:"Fruit", name:"Raspberry", season:"Summer", sun:"Full Sun", days:70,
+        image:"https://images.unsplash.com/photo-1502741338009-cac2772e18bc",
+        variants:[ {name:"Heritage (everbearing)", price:3.59}, {name:"Caroline", price:3.39} ]
+      },
+      { type:"Fruit", name:"Grape", season:"Summer", sun:"Full Sun", days:110,
+        image:"https://images.unsplash.com/photo-1506807803488-8eafc15316c1",
+        variants:[ {name:"Concord", price:3.99}, {name:"Thompson Seedless", price:4.19} ]
+      },
+      { type:"Fruit", name:"Peach", season:"Summer", sun:"Full Sun", days:120,
+        image:"https://images.unsplash.com/photo-1536510344272-c2d74b7fbb9b",
+        variants:[ {name:"Elberta", price:4.59}, {name:"Redhaven", price:4.79} ]
+      },
+      { type:"Fruit", name:"Pear", season:"Fall", sun:"Full Sun", days:120,
+        image:"https://images.unsplash.com/photo-1514794749374-fb67509dbb7f",
+        variants:[ {name:"Bartlett", price:3.89}, {name:"Anjou", price:3.79} ]
+      },
+      { type:"Fruit", name:"Watermelon", season:"Summer", sun:"Full Sun", days:85,
+        image:"https://images.unsplash.com/photo-1560807707-8cc77767d783?ixlib=rb-4.0.3&ixid=Mnwx",
+        variants:[ {name:"Sugar Baby", price:2.69}, {name:"Crimson Sweet", price:2.99} ]
+      },
+      { type:"Fruit", name:"Cantaloupe", season:"Summer", sun:"Full Sun", days:80,
+        image:"https://images.unsplash.com/photo-1625944482299-8f4a8036f2f4",
+        variants:[ {name:"Hale's Best", price:2.49}, {name:"Ambrosia", price:2.89} ]
+      },
+      { type:"Fruit", name:"Fig", season:"Summer", sun:"Full Sun", days:100,
+        image:"https://images.unsplash.com/photo-1519681393784-d120267933ba",
+        variants:[ {name:"Brown Turkey", price:5.29}, {name:"Celeste", price:5.19} ]
+      },
+
+      /* VEGETABLES */
+      { type:"Vegetable", name:"Tomato", season:"Summer", sun:"Full Sun", days:70,
+        image:"https://images.unsplash.com/photo-1506806732259-39c2d0268443",
+        variants:[ {name:"Cherry", price:2.49}, {name:"Roma", price:2.29}, {name:"Beefsteak", price:2.99} ]
+      },
+      { type:"Vegetable", name:"Cucumber", season:"Summer", sun:"Full Sun", days:55,
+        image:"https://images.unsplash.com/photo-1615486364079-6f6e3a3a1f25",
+        variants:[ {name:"Marketmore 76", price:1.99}, {name:"Persian", price:2.19} ]
+      },
+      { type:"Vegetable", name:"Pepper", season:"Summer", sun:"Full Sun", days:75,
+        image:"https://images.unsplash.com/photo-1511690078903-71dc5a51e1b8",
+        variants:[ {name:"Bell (mixed colors)", price:2.59}, {name:"Jalapeño", price:2.39} ]
+      },
+      { type:"Vegetable", name:"Lettuce", season:"Spring", sun:"Partial Sun", days:45,
+        image:"https://images.unsplash.com/photo-1524594227084-79f6f86b9f8f",
+        variants:[ {name:"Butterhead", price:1.79}, {name:"Romaine", price:1.89}, {name:"Looseleaf", price:1.69} ]
+      },
+      { type:"Vegetable", name:"Carrot", season:"Spring", sun:"Full Sun", days:65,
+        image:"https://images.unsplash.com/photo-1506806732259-39c2d0268443?carrots",
+        variants:[ {name:"Nantes", price:1.59}, {name:"Danvers", price:1.49} ]
+      },
+      { type:"Vegetable", name:"Spinach", season:"Spring", sun:"Partial Sun", days:40,
+        image:"https://images.unsplash.com/photo-1543168256-418811576931",
+        variants:[ {name:"Bloomsdale", price:1.69}, {name:"Space (baby leaf)", price:1.89} ]
+      },
+      { type:"Vegetable", name:"Zucchini", season:"Summer", sun:"Full Sun", days:50,
+        image:"https://images.unsplash.com/photo-1598033129183-c4f50c736f10",
+        variants:[ {name:"Black Beauty", price:1.99}, {name:"Costata Romanesco", price:2.39} ]
+      },
+      { type:"Vegetable", name:"Onion", season:"Spring", sun:"Full Sun", days:90,
+        image:"https://images.unsplash.com/photo-1486887396153-fa416526c108",
+        variants:[ {name:"Yellow Sweet Spanish", price:1.49}, {name:"Red Burgundy", price:1.59} ]
+      },
+      { type:"Vegetable", name:"Potato", season:"Spring", sun:"Full Sun", days:90,
+        image:"https://images.unsplash.com/photo-1518977676601-b53f82aba655",
+        variants:[ {name:"Yukon Gold (seed)", price:2.89}, {name:"Russet (seed)", price:2.79} ]
+      },
+      { type:"Vegetable", name:"Broccoli", season:"Fall", sun:"Full Sun", days:65,
+        image:"https://images.unsplash.com/photo-1540420773420-3366772f4999",
+        variants:[ {name:"Calabrese", price:1.99}, {name:"De Cicco", price:2.09} ]
+      },
+    ];
+
+    const grid = document.getElementById('grid');
+    const q = document.getElementById('q');
+    const type = document.getElementById('type');
+    const season = document.getElementById('season');
+    const sun = document.getElementById('sun');
+
+    function currency(n){ return '$' + n.toFixed(2); }
+
+    function render(list){
+      grid.innerHTML = '';
+      if(!list.length){
+        grid.innerHTML = '<div class="empty">No matches. Try clearing a filter or changing your search.</div>';
+        return;
+      }
+      list.forEach(item => {
+        const card = document.createElement('article');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="thumb" style="background-image:url('${item.image}&auto=format&fit=crop&w=1200&q=60')"></div>
+          <div class="body">
+            <div class="title">
+              <span class="chip">${item.type}</span>
+              <div class="name">${item.name}</div>
+            </div>
+            <div class="meta">
+              <span>Season: ${item.season}</span>
+              <span>Sun: ${item.sun}</span>
+              <span>Days to Harvest: ${item.days}</span>
+            </div>
+            <table>
+              <thead><tr><th>Variant</th><th>Price</th></tr></thead>
+              <tbody>
+                ${item.variants.map(v => `<tr><td>${v.name}</td><td>${currency(v.price)}</td></tr>`).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function apply(){
+      const term = q.value.trim().toLowerCase();
+      const t = type.value;
+      const s = season.value;
+      const su = sun.value;
+      const out = DATA.filter(it => {
+        const matchesTerm =
+          !term ||
+          it.name.toLowerCase().includes(term) ||
+          it.type.toLowerCase().includes(term) ||
+          it.season.toLowerCase().includes(term) ||
+          it.sun.toLowerCase().includes(term) ||
+          it.variants.some(v => v.name.toLowerCase().includes(term));
+        const matchesType = !t || it.type === t;
+        const matchesSeason = !s || it.season === s || (s==='All' && it.season==='All');
+        const matchesSun = !su || it.sun === su;
+        return matchesTerm && matchesType && matchesSeason && matchesSun;
+      });
+      render(out);
+    }
+
+    [q, type, season, sun].forEach(el => el.addEventListener('input', apply));
+    render(DATA);
+  </script>
+</body>
+</html>

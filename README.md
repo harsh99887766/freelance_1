@@ -1,4 +1,5 @@
-# 🌱 Grow a Garden
+UPWORK CUSTOMER 1
+
 
 A responsive single-page web application for exploring fruits and vegetables, comparing variants, and checking sample prices. Built with **HTML, CSS, and JavaScript**, and deployed on **GitHub Pages**.
 
